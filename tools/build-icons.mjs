@@ -17,8 +17,10 @@ const outPath = path.join(root, 'icons', 'icons.json');
 
 if (!existsSync(manifestPath)) {
   process.stderr.write(
-    `missing vendored source at ${manifestPath}\n` +
-      're-vendor from the @tabler/icons npm package into vendor/tabler/\n',
+    `missing upstream source at ${manifestPath}\n` +
+      'fetch it before rebuilding:\n' +
+      '  npm pack @tabler/icons@' + VERSION + ' && tar xzf tabler-icons-' + VERSION + '.tgz\n' +
+      '  mkdir -p vendor/tabler && cp -R package/icons package/icons.json package/LICENSE vendor/tabler/\n',
   );
   process.exit(1);
 }

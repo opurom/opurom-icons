@@ -67,7 +67,7 @@ Icons use Tabler's kebab-case identifiers (`home`, `brand-github`, …) and carr
 
 ## Refresh
 
-The vendored source lives under `vendor/tabler/` (the raw upstream `icons.json` and the per-icon SVGs). `tools/build-icons.mjs` parses that source into `icons/icons.json`. Run it manually when the vendored source moves; CI never touches the network and offline builds consume the committed JSON.
+The upstream source is not committed: `tools/build-icons.mjs` reads the raw `icons.json` and the per-icon SVGs from `vendor/tabler/` (gitignored). Fetch them from the npm package before rebuilding, then the script parses the source into `icons/icons.json`. CI never touches the network and offline builds consume the committed JSON.
 
 ```sh
 node tools/build-icons.mjs
