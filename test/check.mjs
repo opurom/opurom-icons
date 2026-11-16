@@ -46,6 +46,7 @@ for (const field of ['site', 'repository', 'version']) {
 
 const ids = new Set();
 const categories = new Set();
+const byKeyword = new Map();
 for (const icon of doc.icons) {
   assert.match(icon.id, /^[a-z0-9-]+$/, `bad id ${icon.id}`);
   assert.ok(!ids.has(icon.id), `duplicate id ${icon.id}`);
@@ -56,6 +57,12 @@ for (const icon of doc.icons) {
     `icon ${icon.id} must carry a category`);
   categories.add(icon.category);
   assert.ok(Array.isArray(icon.tags), `tags on ${icon.id} must be an array`);
+  for (const tag of icon.tags) {
+    assert.ok(typeof tag === 'string' && tag.length > 0,
+      `tag ${JSON.stringify(tag)} on ${icon.id} must be a non-empty string`);
+    if (!byKeyword.has(tag)) byKeyword.set(tag, []);
+    byKeyword.get(tag).push(icon.id);
+  }
   // The top-level path list mirrors the outline style: pkg_icons.rs reads it as
   // the IR `paths`, so drift here ships different art than the styles table.
   const mirror = icon.styles.outline || icon.styles.filled;
@@ -84,6 +91,11 @@ for (const icon of doc.icons) {
 // categories the icons carry, sorted the way the builder writes them.
 assert.deepEqual(doc.categories, [...categories].sort(),
   'categories must equal the sorted set of icon categories');
+
+// The README promises keyword search over tags, digits included: an upstream
+// numeric tag must be reachable through the same string lookup callers use.
+assert.ok((byKeyword.get('911') || []).includes('ambulance'),
+  'numeric keyword 911 must resolve to its icon');
 
 const license = readFileSync(path.join(root, 'LICENSE'), 'utf8');
 assert.match(license, /MIT/, 'LICENSE must be the MIT text');

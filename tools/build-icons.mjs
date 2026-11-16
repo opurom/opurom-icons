@@ -63,7 +63,12 @@ for (const [name, meta] of Object.entries(manifest)) {
     id: name,
     name,
     category: meta.category || 'Other',
-    tags: Array.isArray(meta.tags) ? meta.tags : [],
+    // Upstream tags mix numbers and nulls; keywords must be searchable
+    // strings, so coerce every number and drop nulls (an upstream gap that
+    // carries no keyword) instead of shipping them to callers.
+    tags: (Array.isArray(meta.tags) ? meta.tags : [])
+      .filter((t) => t !== null && t !== undefined)
+      .map((t) => String(t)),
     viewBox: '0 0 24 24',
     paths: styles.outline || styles.filled,
     styles,
