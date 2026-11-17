@@ -54,6 +54,12 @@ The entry document is a plain JSON icon table. Each icon carries one path list p
 
 `viewBox` is preserved per icon so renderers can paint the data unmodified at any size, and the geometry stays deterministic.
 
+## Semantic aliases
+
+`icons/semantics.json` is a shipped lookup table: `semantics` maps call-site names (`close`, `access_time`, …) to package ids (`x`, `clock`, …); `gallery` maps example-screen icon names back to their semantic counterparts; `builtin` lists names owned by the language rather than this package. A name with no semantic counterpart maps to `null` and carries an explanation in `degrade`.
+
+`lib/semantics.mjs` exposes `iconForSemantic(name)`, `semanticForGallery(name)` and `isBuiltin(name)`. Both lookups throw on an unknown name, so a typo fails loudly instead of painting a fallback glyph.
+
 ## Styles
 
 Tabler draws each icon in up to two styles, both shipped here when present:

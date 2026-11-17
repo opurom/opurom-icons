@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { iconForSemantic, isBuiltin, semanticForGallery } from '../lib/semantics.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const manifest = JSON.parse(readFileSync(path.join(root, 'opurom-pkg.json'), 'utf8'));
@@ -97,6 +98,49 @@ assert.deepEqual(doc.categories, [...categories].sort(),
 assert.ok((byKeyword.get('911') || []).includes('ambulance'),
   'numeric keyword 911 must resolve to its icon');
 
+// Shipped semantic aliases: every name resolves once, every id exists, and the
+// two names with no counterpart carry an explicit degrade decision.
+const table = JSON.parse(readFileSync(path.join(root, 'icons/semantics.json'), 'utf8'));
+assert.equal(table.format, 1);
+const semanticNames = Object.keys(table.semantics);
+assert.equal(semanticNames.length, 34, 'component semantics must cover all surveyed names');
+for (const [name, id] of Object.entries(table.semantics)) {
+  assert.match(name, /^[a-z0-9_]+$/, `bad semantic name ${name}`);
+  assert.ok(ids.has(id), `semantic ${name} maps to missing id ${id}`);
+  assert.equal(iconForSemantic(name), id, `lookup for ${name} must be stable`);
+}
+const aliases = {
+  close: 'x',
+  expand_more: 'chevron-down',
+  more_vert: 'dots-vertical',
+  access_time: 'clock',
+  done: 'check',
+  arrow_back: 'arrow-left',
+  skip_next: 'player-skip-forward',
+};
+for (const [name, id] of Object.entries(aliases)) {
+  assert.equal(iconForSemantic(name), id, `alias ${name} must resolve to ${id}`);
+}
+assert.throws(() => iconForSemantic('no_such_name'), /unknown semantic name/);
+
+const galleryNames = Object.keys(table.gallery);
+assert.equal(galleryNames.length, 71, 'gallery map must cover all surveyed names');
+for (const name of galleryNames) {
+  const semantic = semanticForGallery(name);
+  assert.ok(semantic === null || /^[a-z0-9_]+$/.test(semantic), `bad semantic for ${name}`);
+  assert.ok(ids.has(name) || isBuiltin(name),
+    `gallery name ${name} must be a package id or built-in`);
+}
+assert.deepEqual(table.builtin.filter((n) => !ids.has(n)), table.builtin.slice().sort(),
+  'builtin list must be sorted and free of package ids');
+assert.equal(semanticForGallery('layout-bottombar'), null);
+assert.equal(semanticForGallery('calendar'), 'calendar_today');
+for (const name of ['layout-bottombar', 'calendar']) {
+  assert.ok(typeof table.degrade[name] === 'string' && table.degrade[name].length > 0,
+    `${name} must carry a degrade decision`);
+}
+assert.throws(() => semanticForGallery('not-a-gallery-name'), /unknown gallery name/);
+
 const license = readFileSync(path.join(root, 'LICENSE'), 'utf8');
 assert.match(license, /MIT/, 'LICENSE must be the MIT text');
 const notice = readFileSync(path.join(root, 'NOTICE'), 'utf8');
@@ -108,10 +152,11 @@ assert.match(readme, /tabler\.io\/icons/, 'README must link Tabler');
 assert.match(readme, /MIT/, 'README must state the MIT license');
 
 const CJK = /[\u3400-\u9FFF\uF900-\uFAFF\u3000-\u303F\uFF00-\uFFEF]/;
-for (const file of ['README.md', 'NOTICE', 'LICENSE', manifest.entry, 'opurom-pkg.json']) {
+for (const file of ['README.md', 'NOTICE', 'LICENSE', manifest.entry, 'opurom-pkg.json',
+  'icons/semantics.json', 'lib/semantics.mjs']) {
   const body = readFileSync(path.join(root, file), 'utf8');
   assert.ok(!CJK.test(body), `${file} must be free of CJK characters`);
 }
 
 const digest = createHash('sha256').update(readFileSync(path.join(root, manifest.entry))).digest('hex');
-process.stdout.write(`opurom-icons: ${doc.icons.length} icons, ${doc.categories.length} categories, entry sha256 ${digest.slice(0, 16)}\n`);
+process.stdout.write(`opurom-icons: ${doc.icons.length} icons, ${doc.categories.length} categories, ${semanticNames.length} aliases, ${galleryNames.length} gallery names, entry sha256 ${digest.slice(0, 16)}\n`);

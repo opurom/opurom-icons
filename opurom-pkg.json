@@ -21,6 +21,8 @@
     "LICENSE",
     "NOTICE",
     "icons/icons.json",
+    "icons/semantics.json",
+    "lib/semantics.mjs",
     "opurom-pkg.json"
   ]
 }
