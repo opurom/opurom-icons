@@ -120,5 +120,147 @@
   "degrade": {
     "layout-bottombar": "No equivalent semantic name; keep the package-only glyph and do not fake a match.",
     "calendar": "No same-name semantic; the date affordance maps to the nearest name calendar_today."
+  },
+  "paired": {
+    "favorite": {
+      "id": "heart",
+      "style": "filled"
+    },
+    "star": {
+      "id": "star",
+      "style": "filled"
+    },
+    "bookmark": {
+      "id": "bookmark",
+      "style": "filled"
+    },
+    "chat_bubble": {
+      "id": "message",
+      "style": "filled"
+    },
+    "check_circle": {
+      "id": "circle-check",
+      "style": "filled"
+    },
+    "info": {
+      "id": "info-circle",
+      "style": "filled"
+    },
+    "mail": {
+      "id": "mail",
+      "style": "filled"
+    },
+    "lock": {
+      "id": "lock",
+      "style": "filled"
+    },
+    "person": {
+      "id": "user",
+      "style": "filled"
+    },
+    "help": {
+      "id": "help-circle",
+      "style": "filled"
+    },
+    "add_circle": {
+      "id": "circle-plus",
+      "style": "filled"
+    },
+    "delete": {
+      "id": "trash",
+      "style": "filled"
+    },
+    "error": {
+      "id": "alert-circle",
+      "style": "filled"
+    },
+    "lightbulb": {
+      "id": "bulb",
+      "style": "filled"
+    },
+    "work": {
+      "id": "briefcase",
+      "style": "filled"
+    },
+    "label": {
+      "id": "tag",
+      "style": "filled"
+    },
+    "favorite_border": {
+      "id": "heart",
+      "style": "outline"
+    },
+    "star_border": {
+      "id": "star",
+      "style": "outline"
+    },
+    "bookmark_border": {
+      "id": "bookmark",
+      "style": "outline"
+    },
+    "favorite_outline": {
+      "id": "heart",
+      "style": "outline"
+    },
+    "star_outline": {
+      "id": "star",
+      "style": "outline"
+    },
+    "bookmark_outline": {
+      "id": "bookmark",
+      "style": "outline"
+    },
+    "chat_bubble_outline": {
+      "id": "message",
+      "style": "outline"
+    },
+    "check_circle_outline": {
+      "id": "circle-check",
+      "style": "outline"
+    },
+    "info_outline": {
+      "id": "info-circle",
+      "style": "outline"
+    },
+    "mail_outline": {
+      "id": "mail",
+      "style": "outline"
+    },
+    "lock_outline": {
+      "id": "lock",
+      "style": "outline"
+    },
+    "person_outline": {
+      "id": "user",
+      "style": "outline"
+    },
+    "help_outline": {
+      "id": "help-circle",
+      "style": "outline"
+    },
+    "add_circle_outline": {
+      "id": "circle-plus",
+      "style": "outline"
+    },
+    "delete_outline": {
+      "id": "trash",
+      "style": "outline"
+    },
+    "error_outline": {
+      "id": "alert-circle",
+      "style": "outline"
+    },
+    "lightbulb_outline": {
+      "id": "bulb",
+      "style": "outline"
+    },
+    "work_outline": {
+      "id": "briefcase",
+      "style": "outline"
+    },
+    "label_outline": {
+      "id": "tag",
+      "style": "outline"
+    }
   }
 }

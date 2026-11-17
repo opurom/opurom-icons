@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { iconForSemantic, isBuiltin, semanticForGallery } from '../lib/semantics.mjs';
+import { iconForSemantic, isBuiltin, semanticForGallery, styleForSemantic } from '../lib/semantics.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const manifest = JSON.parse(readFileSync(path.join(root, 'opurom-pkg.json'), 'utf8'));
@@ -141,6 +141,26 @@ for (const name of ['layout-bottombar', 'calendar']) {
     `${name} must carry a degrade decision`);
 }
 assert.throws(() => semanticForGallery('not-a-gallery-name'), /unknown gallery name/);
+
+// Filled/outline pairs: every mapped style must exist in the shipped geometry,
+// and the three border pairs must be exact opposites on one id.
+const byId = new Map(doc.icons.map((icon) => [icon.id, icon]));
+for (const [name, pair] of Object.entries(table.paired)) {
+  assert.match(name, /^[a-z0-9_]+$/, `bad paired semantic ${name}`);
+  assert.ok(['outline', 'filled'].includes(pair.style), `bad style for ${name}`);
+  const icon = byId.get(pair.id);
+  assert.ok(icon && Array.isArray(icon.styles[pair.style]) && icon.styles[pair.style].length > 0,
+    `${name} maps to missing ${pair.style} geometry on ${pair.id}`);
+  assert.deepEqual(styleForSemantic(name), pair, `style lookup for ${name} must be stable`);
+}
+for (const name of ['favorite', 'star', 'bookmark']) {
+  const filled = styleForSemantic(name);
+  const border = styleForSemantic(`${name}_border`);
+  assert.equal(filled.id, border.id, `${name} border must share one id`);
+  assert.equal(filled.style, 'filled', `${name} must resolve to filled geometry`);
+  assert.equal(border.style, 'outline', `${name}_border must resolve to outline geometry`);
+}
+assert.throws(() => styleForSemantic('no_such_pair'), /unknown paired semantic/);
 
 const license = readFileSync(path.join(root, 'LICENSE'), 'utf8');
 assert.match(license, /MIT/, 'LICENSE must be the MIT text');

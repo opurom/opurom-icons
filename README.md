@@ -58,7 +58,9 @@ The entry document is a plain JSON icon table. Each icon carries one path list p
 
 `icons/semantics.json` is a shipped lookup table: `semantics` maps call-site names (`close`, `access_time`, …) to package ids (`x`, `clock`, …); `gallery` maps example-screen icon names back to their semantic counterparts; `builtin` lists names owned by the language rather than this package. A name with no semantic counterpart maps to `null` and carries an explanation in `degrade`.
 
-`lib/semantics.mjs` exposes `iconForSemantic(name)`, `semanticForGallery(name)` and `isBuiltin(name)`. Both lookups throw on an unknown name, so a typo fails loudly instead of painting a fallback glyph.
+`lib/semantics.mjs` exposes `iconForSemantic(name)`, `semanticForGallery(name)`, `styleForSemantic(name)` and `isBuiltin(name)`. All name lookups throw on an unknown name, so a typo fails loudly instead of painting a fallback glyph.
+
+`paired` in the same table maps filled/outline counterparts (`favorite` → `heart` + `filled`, `favorite_border` → `heart` + `outline`) and `styleForSemantic` returns `{id, style}`; style selection stays a data contract until the IR variant field lands.
 
 ## Styles
 
