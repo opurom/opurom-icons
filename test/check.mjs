@@ -117,6 +117,7 @@ const aliases = {
   done: 'check',
   arrow_back: 'arrow-left',
   skip_next: 'player-skip-forward',
+  ios_share: 'share-2',
 };
 for (const [name, id] of Object.entries(aliases)) {
   assert.equal(iconForSemantic(name), id, `alias ${name} must resolve to ${id}`);
